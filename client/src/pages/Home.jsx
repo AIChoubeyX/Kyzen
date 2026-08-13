@@ -4,7 +4,7 @@ import api from "../../utils/axios";
 import { FcGoogle } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { setUserData } from "../redux/userSlice";
+import { setUserdata } from "../redux/userSlice";
 import SideBar from "../components/SideBar";
 import ChatArea from "../components/ChatArea";
 import Artifact from "../components/Artifact";
@@ -15,7 +15,7 @@ const Home = () => {
   const handleLogin = async (token) => {
     try {
       const { data } = await api.post("/api/auth/login", { token });
-      dispatch(setUserData(data));
+      dispatch(setUserdata(data?.user ? data.user : data));
       console.log(data);
     } catch (error) {
       console.error("Error during Google login:", error);

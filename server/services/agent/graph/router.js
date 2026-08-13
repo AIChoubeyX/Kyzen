@@ -1,7 +1,35 @@
-import { getModel } from "../config/llm.js";
+import { getModel } from "../config/llmModel.js"
+import { agent } from "../controllers/agent.controller.js"
 
 export const router = async (state) => {
-    const llm = await getModel("router")
+
+  if (state.agent && state.agent !== "auto") {
+    return {
+      ...state,
+      agent: state.agent
+    }
+  }
+
+  if(state.file){
+if(state.file.mimetype==="application/pdf"){
+    return {
+      ...state,
+      agent:"pdfRag"
+    }
+  }
+
+    if(state.file.mimetype.startsWith("image/")){
+    return {
+      ...state,
+      agent:"imageAnalyzer"
+    }
+  }
+  }
+
+  
+
+
+  const llm = await getModel("router")
   const prompt = `You are an agent router.
 
 Available agents:
@@ -11,7 +39,7 @@ Available agents:
 - coding
 - pdf
 - ppt
-- vision
+- vision 
 
 Rules:
 
@@ -39,13 +67,13 @@ pdf:
 Questions about generate PDFs
 or document context.
 
-vision :
-Generate images,
-Create image
-
 ppt:
 Questions about generate ppts
 or ppt context.
+
+vision:
+  Generate image,
+  create image
 
 Return ONLY one word:
 
@@ -53,17 +81,22 @@ chat
 search
 coding
 pdf
-vision
 ppt
+vision
 
 User Query:
-${state.prompt}
+ ${state.prompt}
 `
 
-const response = await llm.invoke(prompt)
-console.log(response)
-return {
+  const response = await llm.invoke(prompt)
+
+  return {
     ...state,
-    agent : response.content.trim().toLowerCase()
+    agent: response.content
+      .trim()
+      .toLowerCase()
+  }
+
+
+
 }
-};

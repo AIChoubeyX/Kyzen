@@ -15,6 +15,6 @@ app.use("/",router);
 // app.use("/", router);
 
 app.listen(port, () => {
-  console.log(`Auth service running  on port☠️  ${port}`);
+  console.log(`Chat service running  on port☠️  ${port}`);
   connectDB();
 });
