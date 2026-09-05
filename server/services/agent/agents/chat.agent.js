@@ -1,8 +1,8 @@
 import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages"
 import { getModel } from "../config/llmModel.js"
 import { getMemory } from "../config/memory.js"
-// import { deductCredits } from "../utils/deductCredits.js"
-// import { checkAgentLimit } from "../config/agentLimit.js"
+import { deductCredits } from "../utils/deductCredits.js"
+import { checkAgentLimit } from "../config/agentLimit.js"
 
 export const chatAgent = async (state) => {
 
@@ -10,7 +10,7 @@ export const chatAgent = async (state) => {
 
     try {
 
-        // await checkAgentLimit(state.userId,"chat")
+        await checkAgentLimit(state.userId,"chat")
 
          const llm = await getModel("chat")
 
@@ -26,7 +26,7 @@ Answer the user using only the above search results.
 
 
     const systemPrompt = `
-    You are KyzenAI, an intelligent AI assistant.
+    You are CortexAI, an intelligent AI assistant.
 
  
     ${searchContext}
@@ -73,8 +73,8 @@ Answer the user using only the above search results.
 
 
 
-    // const response = await llm.invoke(messages)
-    //   await deductCredits(state.userId,"chat")
+    const response = await llm.invoke(messages)
+      await deductCredits(state.userId,"chat")
    
     return {
         ...state,

@@ -3,34 +3,62 @@ dotenv.config()
 import { ChatGroq } from "@langchain/groq"
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai"
 import { ChatOpenRouter } from "@langchain/openrouter";
-const groq=new ChatGroq({
-    model:"openai/gpt-oss-120b"
-})
 
-const gemini=new ChatGoogleGenerativeAI({
-    model:"gemini-2.5-flash"
-})
+let groq;
+let gemini;
+let openrouter;
 
-const openrouter=new ChatOpenRouter({
-    model:"deepseek/deepseek-chat",
-    temperature:0,
-    maxTokens:2500
-})
+const getGroqModel = () => {
+    if (!groq) {
+        groq = new ChatGroq({
+            model: "openai/gpt-oss-120b",
+            apiKey: process.env.GROQ_API_KEY,
+        });
+    }
+    return groq;
+}
+
+const getGeminiModel = () => {
+    if (!gemini) {
+        gemini = new ChatGoogleGenerativeAI({
+            model: "gemini-3.6-flash",
+            apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY,
+        });
+    }
+    return gemini;
+}
+
+const getOpenRouterModel = () => {
+    if (!openrouter) {
+        openrouter = new ChatOpenRouter({
+            model: "cohere/north-mini-code:free",
+            temperature: 0,
+            maxTokens: 8000,
+            modelKwargs: {
+                reasoning: {
+                    effort: "none"
+                }
+            },
+            apiKey: process.env.OPENROUTER_API_KEY,
+        });
+    }
+    return openrouter;
+}
 
 
 export const getModel=async (agent)=>{
     switch (agent) {
         case "chat":
-            return groq;
+            return getGroqModel();
         case "search" :    
-           return groq;
+           return getGroqModel();
         case "coding": 
-           return openrouter; 
+           return getOpenRouterModel(); 
         case "imageAnalyzer": 
-           return gemini;   
+           return getGeminiModel();   
     
         default:
-            return groq;
+            return getGroqModel();
     }
 }
 

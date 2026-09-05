@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import  { useEffect } from 'react'
+import { useEffect } from 'react'
 import Nav from './Nav'
 import MessageList from './MessageList'
 import ChatInput from './ChatInput'

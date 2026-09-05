@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-// import React from 'react'
-import { Coins, LogOut, Menu, MessageSquare, PanelLeftIcon, PanelRight, PenSquare, Plus, User, X } from "lucide-react"
+import React from 'react'
+import { Coins, LogOut, Menu, MessageSquare, PanelLeftIcon, PanelRight, PenBoxIcon, PenSquare, Plus, User, X } from "lucide-react"
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { getConversations } from '../features/getConversations'
@@ -11,14 +11,14 @@ import { addConversation, setConversations, setSelectedConversation } from '../r
 import { createConversation } from '../features/createConversation'
 import logOut from '../features/logOut'
 import { setUserdata } from '../redux/userSlice'
-// import BillingDrawer from './BillingDrawer'
+import BillingDrawer from './BillingDrawer'
 function SideBar() {
     const [collapsed, setCollapsed] = useState(false)
     const dispatch = useDispatch()
     const [imageError, setImageError] = useState(false)
     const { conversations, selectedConversation } = useSelector(state => state.conversation)
     const { userData } = useSelector(state => state.user)
-    // const [showBilling,setShowBilling]=useState(false)
+    const [showBilling,setShowBilling]=useState(false)
     const [mobileOpen,setMobileOpen]=useState(false)
     useEffect(() => {
         const getConv = async () => {
@@ -28,11 +28,11 @@ function SideBar() {
         getConv()
     }, [userData?._id])
 
+    // eslint-disable-next-line no-unused-vars
     const handleCreateConversation = async () => {
-    const data = await createConversation()
-    dispatch(addConversation(data))
-    dispatch(setSelectedConversation(data)) // ✅ Also select it
-}
+        const data = await createConversation()
+        dispatch(addConversation(data))
+    }
 
 
 
@@ -47,13 +47,13 @@ function SideBar() {
 
                 <button
                     className='flex items-center justify-center w-9 h-9 rounded-xl text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer '
-                    onClick={handleCreateConversation}
+                    onClick={()=>dispatch(setSelectedConversation(null))}
                 >
                     <Plus size={17} />
                 </button>
 
                 <div className='flex-1 overflow-y-auto px-2.5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pt-5'>
-                    {conversations.map((conv ,i) => {
+                    {conversations.map((conv, i) => {
                         const isActive = selectedConversation?._id == conv?._id
                         return (
                             <div
@@ -132,18 +132,18 @@ function SideBar() {
                         <X/>
                     </button>
                     <span className='text-[16px] font-semibold text-slate-100 tracking-tight flex-1'>
-                        KyzenAI
+                        CortexAI
                     </span>
                     <span className='text-[10px] font-medium text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-full tracking-wide'>{userData?.plan || "free"}</span>
                     <button className='flex items-center justify-center w-7 h-7 rounded-lg text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer'
-                        onClick={handleCreateConversation} >
+                        onClick={()=>dispatch(setSelectedConversation(null))}>
                         <PenSquare size={14} />
                     </button>
                 </div>
 
                 <div className='px-4 pt-4 pb-1'>
                     <button className='w-full flex items-center justify-center gap-2 text-sm font-medium text-white bg-linear-to-br from-indigo-500 to-violet-700 rounded-xl py-[10px] border-none cursor-pointer hover:opacity-90 transition-opacity duration-150'
-                         onClick={handleCreateConversation} 
+                        onClick={()=>dispatch(setSelectedConversation(null))}
                     >
                         <Plus size={15} />
                         New Chat
@@ -164,7 +164,7 @@ function SideBar() {
 
 
                 <div className='flex-1 overflow-y-auto px-2.5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
-                    {conversations?.map((conv , i) => {
+                    {conversations?.map((conv, i) => {
                         const isActive = selectedConversation?._id == conv?._id
                         return (
                             <div
@@ -213,7 +213,7 @@ function SideBar() {
                             </div>
                             <div className='flex gap-1'>
                                 <button 
-                                // onClick={()=>setShowBilling(true)}
+                                onClick={()=>setShowBilling(true)}
                                 className='flex items-center justify-center w-7 h-7 rounded-[7px] border-none bg-transparent text-yellow-600 cursor-pointer hover:bg-white/[0.08] hover:text-slate-400 transition-all duration-150'>
                                     <Coins size={16} />
                                 </button>
@@ -237,10 +237,10 @@ function SideBar() {
         </div>
 
         
-           {/* <BillingDrawer
+           <BillingDrawer
            open={showBilling}
            onClose={()=>setShowBilling(false)}
-           /> */}
+           />
 
         </>
     )

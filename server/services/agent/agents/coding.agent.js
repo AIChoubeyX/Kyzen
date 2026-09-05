@@ -1,6 +1,7 @@
 import { checkAgentLimit } from "../config/agentLimit.js"
-import { getModel } from "../config/llmModels.js"
+import { getModel } from "../config/llmModel.js"
 import { deductCredits } from "../utils/deductCredits.js"
+import { jsonrepair } from "jsonrepair"
 
 export const codingAgent=async (state) => {
 try {
@@ -23,12 +24,13 @@ DOCUMENTATION
 User Request:
 ${state.prompt}
     `)
-    const intent=intentRes.content
-    if(intent=="CODE_GENERATION"){
+    const intent=intentRes.content.trim()
+    if(intent==="CODE_GENERATION"){
         const prompt=`
         You are CortexAI Coding Agent.
 
-Generate the requested project.
+  Generate exactly what the user requests. The requested programming language or file type
+  always takes priority over the default stack below.
 
 Default stack:
 - HTML
@@ -48,12 +50,12 @@ Rules:
 - Beautiful spacing
 - Single page unless user asks otherwise.
 
-IMAGES
+IMAGES (only for web projects)
 =========================
 
-Always use real Unsplash images.
+Use real Unsplash images only when the user requests a web project.
 
-Never use placeholders.
+Do not add web files or images to a non-web programming request.
 
 Return ONLY valid JSON.
 
@@ -62,15 +64,7 @@ Schema:
 {
   "files":[
     {
-      "name":"index.html",
-      "content":"..."
-    },
-    {
-      "name":"style.css",
-      "content":"..."
-    },
-    {
-      "name":"script.js",
+      "name":"filename.ext",
       "content":"..."
     }
   ]
@@ -91,7 +85,22 @@ ${state.prompt}
         ` 
         const res=await llm.invoke(prompt)
         console.log(res)
-        const data=JSON.parse(res.content)
+        if (res.response_metadata?.finish_reason === "length") {
+          throw new Error("The coding model response was truncated. Please try again with a smaller request.")
+        }
+        const content=res.content?.trim()
+        if (!content) {
+          throw new Error("The coding model returned an empty response.")
+        }
+        let data
+        try {
+          data=JSON.parse(content)
+        } catch {
+          data=JSON.parse(jsonrepair(content))
+        }
+        if (!Array.isArray(data.files)) {
+          throw new Error("The coding model returned an invalid files list.")
+        }
         await deductCredits(state.userId,"coding")
         
         return {
@@ -148,7 +157,7 @@ ${state.prompt}
    console.log(error)
          return {
             ...state,
-            aiResponse:error?.data?.message || "failed to generate code",
+            aiResponse:error?.data?.message || error?.message || "failed to generate code",
             artifacts:[]
         }
 }
