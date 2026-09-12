@@ -1,4 +1,10 @@
-# KyzenAI
+<p align="center">
+    <img src="client/public/kylogo.png" alt="KyzenAI logo" width="180" />
+</p>
+
+<h1 align="center">KyzenAI</h1>
+
+<p align="center">Your intelligent workspace for conversation, creation, and collaboration.</p>
 
 KyzenAI is a full-stack AI workspace that combines conversational assistance, coding help, web search, document generation, multimodal analysis, persistent chat history, and credit-based billing in one application.
 
