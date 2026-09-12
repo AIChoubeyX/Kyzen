@@ -1,5 +1,5 @@
-import { Check, Copy, ExternalLink, FileX2, X } from 'lucide-react'
-import React from 'react'
+import { Check, Copy, ExternalLink,  X } from 'lucide-react'
+// import React from 'react'
 import { useState } from 'react'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'

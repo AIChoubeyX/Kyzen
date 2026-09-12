@@ -40,7 +40,7 @@ function MessageList() {
       ):
       <div className='space-y-5'>
 
-        // eslint-disable-next-line no-unused-vars
+        
         {messages?.map((msg , i)=>(
             <div>
                <MessageBubble role={msg?.role} content={msg?.content} images={msg.images || []} /> 

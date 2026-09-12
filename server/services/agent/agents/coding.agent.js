@@ -27,7 +27,7 @@ ${state.prompt}
     const intent=intentRes.content.trim()
     if(intent==="CODE_GENERATION"){
         const prompt=`
-        You are CortexAI Coding Agent.
+        You are KyzenAI Coding Agent.
 
   Generate exactly what the user requests. The requested programming language or file type
   always takes priority over the default stack below.
